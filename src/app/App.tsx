@@ -1,0 +1,874 @@
+import { ImageWithFallback } from "./components/figma/ImageWithFallback";
+import { supabase } from "../utils/supabase";
+
+import { useState } from "react";
+
+export default function App() {
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [openRegister, setOpenRegister] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    destination_country: "",
+    preferred_study_level: "",
+    english_test_taken: "",
+  });
+
+  const countries = [
+    {
+      id: "uk",
+      name: "Study in UK",
+      flag: "🇬🇧",
+      image:
+        "https://images.unsplash.com/photo-1689446800111-28fc9cb0583d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxMb25kb24lMjBCaWclMjBCZW4lMjBVS3xlbnwxfHx8fDE3Njc4Nzc2MjV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      admissionInfo: {
+        requirements: [
+          "Academic transcripts and certificates",
+          "English proficiency test (IELTS/TOEFL)",
+          "Statement of Purpose",
+          "Letters of Recommendation",
+          "Valid passport",
+        ],
+        intakes: ["September (Main)", "January", "May"],
+        duration: "Undergraduate: 3 years | Postgraduate: 1-2 years",
+        popularCourses: [
+          "Business & Management",
+          "Engineering",
+          "Computer Science",
+          "Medicine",
+          "Arts & Humanities",
+        ],
+        workRights: "Up to 20 hours/week during studies",
+      },
+    },
+    {
+      id: "usa",
+      name: "Study in USA",
+      flag: "🇺🇸",
+      image:
+        "https://images.unsplash.com/photo-1734900715044-ef86383fd704?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxOZXclMjBZb3JrJTIwQ2l0eSUyMFVTQXxlbnwxfHx8fDE3Njc4Nzc2MjV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      admissionInfo: {
+        requirements: [
+          "SAT/ACT (Undergraduate) or GRE/GMAT (Graduate)",
+          "Academic transcripts",
+          "English proficiency (TOEFL/IELTS)",
+          "Essays and Personal Statement",
+          "Letters of Recommendation",
+          "Financial documents",
+        ],
+        intakes: [
+          "Fall (August/September)",
+          "Spring (January)",
+          "Summer (May)",
+        ],
+        duration: "Undergraduate: 4 years | Postgraduate: 1.5-2 years",
+        popularCourses: [
+          "Computer Science",
+          "Business Administration",
+          "Engineering",
+          "Data Science",
+          "Medicine",
+        ],
+        workRights: "On-campus jobs and CPT/OPT programs available",
+      },
+    },
+    {
+      id: "canada",
+      name: "Study in Canada",
+      flag: "🇨🇦",
+      image:
+        "https://images.unsplash.com/photo-1668882698355-923d532fa985?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxUb3JvbnRvJTIwQ2FuYWRhJTIwc2t5bGluZXxlbnwxfHx8fDE3Njc4NTY2NTd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      admissionInfo: {
+        requirements: [
+          "Academic transcripts and diplomas",
+          "English/French proficiency (IELTS/TOEFL)",
+          "Statement of Purpose",
+          "Letters of Recommendation",
+          "Study permit application",
+          "Proof of funds",
+        ],
+        intakes: ["Fall (September)", "Winter (January)", "Summer (May)"],
+        duration: "Undergraduate: 3-4 years | Postgraduate: 1-2 years",
+        popularCourses: [
+          "Engineering",
+          "Business",
+          "Computer Science",
+          "Healthcare",
+          "Natural Resources",
+        ],
+        workRights: "20 hours/week during studies, full-time during breaks",
+      },
+    },
+    {
+      id: "australia",
+      name: "Study in Australia",
+      flag: "🇦🇺",
+      image:
+        "https://images.unsplash.com/photo-1718185795639-c442aff612cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxTeWRuZXklMjBPcGVyYSUyMEhvdXNlJTIwQXVzdHJhbGlhfGVufDF8fHx8MTc2Nzg1NjY1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      admissionInfo: {
+        requirements: [
+          "Academic transcripts",
+          "English proficiency (IELTS/TOEFL/PTE)",
+          "Statement of Purpose",
+          "Genuine Temporary Entrant (GTE) statement",
+          "Health insurance (OSHC)",
+          "Financial capacity proof",
+        ],
+        intakes: ["February (Main)", "July"],
+        duration: "Undergraduate: 3 years | Postgraduate: 1.5-2 years",
+        popularCourses: [
+          "Engineering",
+          "Business",
+          "IT",
+          "Health Sciences",
+          "Education",
+        ],
+        workRights:
+          "48 hours per fortnight during semester, unlimited during breaks",
+      },
+    },
+    {
+      id: "germany",
+      name: "Study in Germany",
+      flag: "🇩🇪",
+      image:
+        "https://images.unsplash.com/photo-1618260397416-12801af7ff7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxCZXJsaW4lMjBHZXJtYW55JTIwYXJjaGl0ZWN0dXJlfGVufDF8fHx8MTc2Nzg3NzYyNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      admissionInfo: {
+        requirements: [
+          "Academic certificates (APS certified)",
+          "German language proficiency (TestDaF/DSH) or English (IELTS/TOEFL)",
+          "Motivation letter",
+          "CV/Resume",
+          "Blocked account (€11,208/year)",
+          "Health insurance",
+        ],
+        intakes: ["Winter Semester (October)", "Summer Semester (April)"],
+        duration: "Undergraduate: 3-4 years | Postgraduate: 2 years",
+        popularCourses: [
+          "Engineering",
+          "Computer Science",
+          "Business",
+          "Natural Sciences",
+          "Medicine",
+        ],
+        workRights: "120 full days or 240 half days per year",
+      },
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-white relative">
+      {/* Right Side Navigation */}
+      <nav className="fixed right-0 top-0 h-screen w-20 flex flex-col items-center justify-center gap-12 z-50">
+        <a
+          href="#about"
+          className="vertical-text text-gray-700 hover:text-[#7C3AED] transition-colors duration-300"
+          style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+        >
+          About Us
+        </a>
+        <a
+          href="#blog"
+          className="vertical-text text-gray-700 hover:text-[#7C3AED] transition-colors duration-300"
+          style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+        >
+          Blog
+        </a>
+        <a
+          href="#connect"
+          className="vertical-text bg-[#FCD34D] text-gray-900 px-6 py-3 rounded-full hover:bg-[#FBBF24] transition-all duration-300 shadow-md hover:shadow-lg"
+          style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+        >
+          Let's Connect
+        </a>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center px-8 md:px-16 lg:px-24">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <ImageWithFallback
+            src="https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50cyUyMHN0dWR5aW5nJTIwYWJyb2FkJTIwY2FtcHVzfGVufDF8fHx8MTc2Nzg3NDA5MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+            alt="Students studying abroad"
+            className="w-full h-full object-cover"
+          />
+          {/* Purple Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#7C3AED]/90 via-[#7C3AED]/70 to-transparent"></div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-4xl mr-20">
+          {/* Logo/Brand Name */}
+          <div className="mb-8">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl text-white mb-2">
+              Vidyayatra
+            </h1>
+            <div className="h-1 w-32 bg-[#FCD34D]"></div>
+          </div>
+
+          {/* Main Headline */}
+          <h2 className="text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight">
+            Begin Your Study Abroad Journey with Confidence
+          </h2>
+
+          {/* Sub-text */}
+          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl leading-relaxed">
+            Navigate your path to international education with expert
+            counseling, personalized country selection guidance, and
+            comprehensive application support tailored to your academic
+            aspirations.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap gap-4">
+            <button className="bg-[#FCD34D] text-gray-900 px-8 py-4 rounded-full hover:bg-[#FBBF24] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+              Start Your Journey
+            </button>
+            <button className="border-2 border-white text-white px-8 py-4 rounded-full hover:bg-white hover:text-[#7C3AED] transition-all duration-300">
+              Learn More
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-20 px-8 md:px-16 lg:px-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl text-[#7C3AED] mb-4">
+              How We Guide You
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Comprehensive support at every step of your study abroad journey
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mr-20">
+            {/* Service 1 */}
+            <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
+              <div className="w-16 h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
+                <svg
+                  className="w-8 h-8 text-[#7C3AED]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl text-gray-900 mb-3">Country Selection</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Expert guidance to help you choose the perfect destination based
+                on your academic goals, budget, and career aspirations.
+              </p>
+            </div>
+
+            {/* Service 2 */}
+            <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#FCD34D]">
+              <div className="w-16 h-16 bg-[#FCD34D]/20 rounded-full flex items-center justify-center mb-6">
+                <svg
+                  className="w-8 h-8 text-[#F59E0B]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl text-gray-900 mb-3">Counseling</h3>
+              <p className="text-gray-600 leading-relaxed">
+                One-on-one personalized counseling sessions to understand your
+                profile and map out your ideal study abroad strategy.
+              </p>
+            </div>
+
+            {/* Service 3 */}
+            <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
+              <div className="w-16 h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
+                <svg
+                  className="w-8 h-8 text-[#7C3AED]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl text-gray-900 mb-3">
+                Application Support
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                End-to-end assistance with university applications,
+                documentation, essays, and visa processes to ensure success.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-20 px-8 md:px-16 lg:px-24 bg-white">
+        <div className="max-w-7xl mx-auto mr-20">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl text-[#7C3AED] mb-6">
+                Why Choose Vidyayatra?
+              </h2>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="text-xl text-gray-900 mb-2">
+                      Expert Guidance
+                    </h4>
+                    <p className="text-gray-600">
+                      Experienced counselors with in-depth knowledge of global
+                      education systems
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="text-xl text-gray-900 mb-2">
+                      Personalized Approach
+                    </h4>
+                    <p className="text-gray-600">
+                      Tailored strategies that align with your unique academic
+                      profile and goals
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="text-xl text-gray-900 mb-2">
+                      Proven Track Record
+                    </h4>
+                    <p className="text-gray-600">
+                      Hundreds of successful placements in top universities
+                      worldwide
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="text-xl text-gray-900 mb-2">
+                      End-to-End Support
+                    </h4>
+                    <p className="text-gray-600">
+                      From initial counseling to visa approval - we're with you
+                      every step
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] p-12 rounded-3xl shadow-2xl text-white">
+              <div className="text-center mb-8">
+                <p className="text-6xl mb-4">🎓</p>
+                <h3 className="text-3xl mb-2">Ready to Begin?</h3>
+                <p className="text-white/90">
+                  Take the first step towards your international education
+                </p>
+              </div>
+              <button className="w-full bg-[#FCD34D] text-gray-900 px-8 py-4 rounded-full hover:bg-[#FBBF24] transition-all duration-300 shadow-lg hover:shadow-xl">
+                Schedule Free Consultation
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Countries Section */}
+      <section className="py-20 px-8 md:px-16 lg:px-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto mr-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl text-[#7C3AED] mb-4">
+              Choose Your Destination
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Explore admission requirements and opportunities in top study
+              destinations
+            </p>
+          </div>
+
+          {/* Country Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {countries.map((country) => (
+              <div
+                key={country.id}
+                onClick={() => setSelectedCountry(country.id)}
+                className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              >
+                <div className="relative h-64">
+                  <ImageWithFallback
+                    src={country.image}
+                    alt={country.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <p className="text-5xl mb-2">{country.flag}</p>
+                    <h3 className="text-2xl text-white">{country.name}</h3>
+                    <p className="text-white/80 text-sm mt-2">
+                      Click to view admission details →
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center mt-10">
+            <button
+              onClick={() => setOpenRegister(true)}
+              className="bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white px-10 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition-all"
+            >
+              Register Now
+            </button>
+          </div>
+
+          {openRegister && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl text-[#7C3AED]">
+                    Student Registration
+                  </h3>
+                  <button onClick={() => setOpenRegister(false)}>✕</button>
+                </div>
+
+                <form
+                  className="space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setLoading(true);
+
+                    const { error } = await supabase.from("students").insert({
+                      full_name: formData.full_name,
+                      email: formData.email,
+                      phone: formData.phone,
+                      destination_country: formData.destination_country,
+                      preferred_study_level: formData.preferred_study_level,
+                    });
+
+                    setLoading(false);
+
+                    if (error) {
+                      alert(error.message);
+                    } else {
+                      alert("Registration successful!");
+                      setOpenRegister(false);
+                    }
+                  }}
+                >
+                  <input
+                    required
+                    placeholder="Full Name"
+                    className="w-full border p-3 rounded-lg"
+                    onChange={(e) =>
+                      setFormData({ ...formData, full_name: e.target.value })
+                    }
+                  />
+
+                  <input
+                    required
+                    type="email"
+                    placeholder="Email"
+                    className="w-full border p-3 rounded-lg"
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                  />
+
+                  <input
+                    required
+                    placeholder="Phone"
+                    className="w-full border p-3 rounded-lg"
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                  />
+
+                  <select
+                    required
+                    className="w-full border p-3 rounded-lg"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        destination_country: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Country Interested</option>
+                    {[
+                      "UK",
+                      "USA",
+                      "UAE",
+                      "Canada",
+                      "Australia",
+                      "New Zealand",
+                      "Ireland",
+                      "Germany",
+                      "Italy",
+                      "France",
+                    ].map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    required
+                    className="w-full border p-3 rounded-lg"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        preferred_study_level: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Preferred Study Level</option>
+                    <option value="Undergraduate">Undergraduate</option>
+                    <option value="Postgraduate">Postgraduate</option>
+                    <option value="Other">Other</option>
+                    </select>
+
+                  <select
+                    required
+                    className="w-full border p-3 rounded-lg"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        english_test_taken: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">English Proficiency Test Taken?</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+
+                  <button
+                    disabled={loading}
+                    className="w-full bg-[#7C3AED] text-white py-3 rounded-lg hover:bg-[#5B21B6] transition"
+                  >
+                    {loading ? "Submitting..." : "Submit"}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Admission Details Modal */}
+          {selectedCountry && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
+              <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-slideUp">
+                <div className="sticky top-0 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] p-8 rounded-t-3xl">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-6xl mb-3">
+                        {countries.find((c) => c.id === selectedCountry)?.flag}
+                      </p>
+                      <h3 className="text-4xl text-white mb-2">
+                        {countries.find((c) => c.id === selectedCountry)?.name}
+                      </h3>
+                      <p className="text-white/90">Complete Admission Guide</p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedCountry(null)}
+                      className="bg-white/20 hover:bg-white/30 text-white rounded-full p-3 transition-all"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-8 space-y-8">
+                  {/* Requirements */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-[#7C3AED]/10 rounded-full flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-[#7C3AED]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                      <h4 className="text-2xl text-gray-900">
+                        Admission Requirements
+                      </h4>
+                    </div>
+                    <ul className="space-y-3 ml-13">
+                      {countries
+                        .find((c) => c.id === selectedCountry)
+                        ?.admissionInfo.requirements.map((req, idx) => (
+                          <li key={idx} className="flex items-start gap-3">
+                            <span className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2 flex-shrink-0"></span>
+                            <span className="text-gray-700">{req}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+
+                  {/* Intakes */}
+                  <div className="bg-gray-50 p-6 rounded-2xl">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-[#FCD34D]/30 rounded-full flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-[#F59E0B]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <h4 className="text-xl text-gray-900">
+                        Available Intakes
+                      </h4>
+                    </div>
+                    <div className="flex flex-wrap gap-3 ml-13">
+                      {countries
+                        .find((c) => c.id === selectedCountry)
+                        ?.admissionInfo.intakes.map((intake, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-white px-4 py-2 rounded-full text-gray-700 border border-gray-200"
+                          >
+                            {intake}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* Duration */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-[#7C3AED]/10 rounded-full flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-[#7C3AED]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                      <h4 className="text-xl text-gray-900">Course Duration</h4>
+                    </div>
+                    <p className="text-gray-700 ml-13">
+                      {
+                        countries.find((c) => c.id === selectedCountry)
+                          ?.admissionInfo.duration
+                      }
+                    </p>
+                  </div>
+
+                  {/* Popular Courses */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-[#FCD34D]/30 rounded-full flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-[#F59E0B]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          />
+                        </svg>
+                      </div>
+                      <h4 className="text-xl text-gray-900">Popular Courses</h4>
+                    </div>
+                    <div className="flex flex-wrap gap-3 ml-13">
+                      {countries
+                        .find((c) => c.id === selectedCountry)
+                        ?.admissionInfo.popularCourses.map((course, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-[#7C3AED]/10 text-[#7C3AED] px-4 py-2 rounded-full"
+                          >
+                            {course}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* Work Rights */}
+                  <div className="bg-[#7C3AED]/5 p-6 rounded-2xl border border-[#7C3AED]/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-[#7C3AED]/20 rounded-full flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-[#7C3AED]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <h4 className="text-xl text-gray-900">
+                        Work Rights for Students
+                      </h4>
+                    </div>
+                    <p className="text-gray-700 ml-13">
+                      {
+                        countries.find((c) => c.id === selectedCountry)
+                          ?.admissionInfo.workRights
+                      }
+                    </p>
+                  </div>
+
+                  {/* CTA Button */}
+                  <div className="pt-4">
+                    <button className="w-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white px-8 py-4 rounded-full hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      Get Started with{" "}
+                      {countries.find((c) => c.id === selectedCountry)?.name}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#1F1F1F] text-white py-12 px-8 md:px-16 lg:px-24">
+        <div className="max-w-7xl mx-auto mr-20">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-2xl mb-4 text-[#FCD34D]">Vidyayatra</h3>
+              <p className="text-gray-400">
+                Your trusted partner in international education
+              </p>
+            </div>
+            <div>
+              <h4 className="mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <a
+                    href="#about"
+                    className="hover:text-[#FCD34D] transition-colors"
+                  >
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#services"
+                    className="hover:text-[#FCD34D] transition-colors"
+                  >
+                    Services
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#blog"
+                    className="hover:text-[#FCD34D] transition-colors"
+                  >
+                    Blog
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-4">Contact</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>info@vidyayatra.com</li>
+                <li>+1 (555) 123-4567</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-4">Follow Us</h4>
+              <div className="flex gap-4">
+                <a
+                  href="#"
+                  className="w-10 h-10 bg-[#7C3AED] rounded-full flex items-center justify-center hover:bg-[#FCD34D] transition-colors"
+                >
+                  <span className="text-white">f</span>
+                </a>
+                <a
+                  href="#"
+                  className="w-10 h-10 bg-[#7C3AED] rounded-full flex items-center justify-center hover:bg-[#FCD34D] transition-colors"
+                >
+                  <span className="text-white">in</span>
+                </a>
+                <a
+                  href="#"
+                  className="w-10 h-10 bg-[#7C3AED] rounded-full flex items-center justify-center hover:bg-[#FCD34D] transition-colors"
+                >
+                  <span className="text-white">tw</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2026 Vidyayatra. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
