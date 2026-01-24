@@ -4,11 +4,20 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useState } from "react";
+import {
+  UserCheck,
+  GraduationCap,
+  ClipboardCheck,
+  Wallet,
+  Home,
+  BookOpen,
+} from "lucide-react";
 
 export default function App() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [openRegister, setOpenRegister] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -55,57 +64,6 @@ export default function App() {
         "High-quality education system",
         "Gateway to European opportunities",
       ],
-    },
-  ];
-
-  const services = [
-    {
-      title: "Country Selection",
-      description:
-        "Expert guidance to help you choose the perfect destination based on your academic goals, budget, and career aspirations.",
-      border: "border-[#7C3AED]",
-      bg: "bg-[#7C3AED]/10",
-      iconColor: "text-[#7C3AED]",
-      icon: (
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
-        />
-      ),
-    },
-    {
-      title: "Counseling",
-      description:
-        "One-on-one personalized counseling sessions to understand your profile and map out your ideal study abroad strategy.",
-      border: "border-[#FCD34D]",
-      bg: "bg-[#FCD34D]/20",
-      iconColor: "text-[#F59E0B]",
-      icon: (
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-        />
-      ),
-    },
-    {
-      title: "Application Support",
-      description:
-        "End-to-end assistance with university applications, documentation, essays, and visa processes to ensure success.",
-      border: "border-[#7C3AED]",
-      bg: "bg-[#7C3AED]/10",
-      iconColor: "text-[#7C3AED]",
-      icon: (
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      ),
     },
   ];
 
@@ -292,9 +250,9 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className="min-h-screen bg-white relative overflow-x-hidden">
       {/* Right Side Navigation */}
-      <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50 px-8 md:px-16 lg:px-24 py-4">
+      <nav className="fixed top-0 left-0 right-0 bg-[#FDE68A]/95 backdrop-blur-sm shadow-sm z-50 px-8 md:px-16 lg:px-24 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
@@ -307,27 +265,74 @@ export default function App() {
             </div>
           </div>
 
-          {/* Links */}
+          {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#services" className="text-gray-700 hover:text-[#7C3AED]">
               Services
             </a>
+            <a href="#about" className="text-gray-700 hover:text-[#7C3AED]">
+              Why Choose Us
+            </a>
             <a href="#countries" className="text-gray-700 hover:text-[#7C3AED]">
               Destinations
             </a>
-            <a href="#about" className="text-gray-700 hover:text-[#7C3AED]">
-              About Us
-            </a>
-            <a href="#blog" className="text-gray-700 hover:text-[#7C3AED]">
-              Blog
-            </a>
+
             <button
               onClick={() => setOpenRegister(true)}
-              className="bg-[#FCD34D] text-gray-900 px-6 py-2 rounded-full hover:bg-[#FBBF24] shadow-md"
+              className="bg-[#7C3AED] text-white px-6 py-2 rounded-full hover:bg-[#6D28D9] shadow-md transition"
             >
-              Let's Connect
+              Register Now
             </button>
           </div>
+
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden text-gray-700 text-2xl"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            ☰
+          </button>
+
+          {/* Mobile menu */}
+          {menuOpen && (
+            <div className="absolute top-full left-0 right-0 bg-white shadow-md md:hidden">
+              <div className="flex flex-col p-6 gap-4">
+                <a
+                  href="#services"
+                  className="text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Services
+                </a>
+
+                <a
+                  href="#about"
+                  className="text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Why Choose Us
+                </a>
+
+                <a
+                  href="#countries"
+                  className="text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Destinations
+                </a>
+
+                <button
+                  onClick={() => {
+                    setOpenRegister(true);
+                    setMenuOpen(false);
+                  }}
+                  className="bg-[#7C3AED] text-white py-2 rounded-full hover:bg-[#6D28D9] transition"
+                >
+                  Let’s Connect
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -380,7 +385,7 @@ export default function App() {
                 {/* Content */}
                 <div className="absolute inset-0 flex items-center px-8 md:px-16 lg:px-24">
                   <div className="max-w-4xl">
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl text-white mb-6">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                       {slide.title}
                     </h2>
 
@@ -388,7 +393,7 @@ export default function App() {
                       {slide.points.map((point, idx) => (
                         <li key={idx} className="flex items-start gap-3">
                           <span className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2" />
-                          <span className="text-lg md:text-xl text-white/90">
+                          <span className="text-base sm:text-lg md:text-xl text-white/90">
                             {point}
                           </span>
                         </li>
@@ -402,7 +407,7 @@ export default function App() {
         </div>
 
         {/* CTA */}
-        <div className="absolute bottom-20 left-8 md:left-16 lg:left-24 z-20">
+        <div className="absolute bottom-10 left-4 sm:left-8 md:left-16 z-20">
           <button
             onClick={() => setOpenRegister(true)}
             className="bg-[#FCD34D] text-gray-900 px-8 py-4 rounded-full hover:bg-[#FBBF24] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -413,51 +418,107 @@ export default function App() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 px-8 md:px-16 lg:px-24 bg-gray-50">
+      <section
+        id="services"
+        className="py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gray-50"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl text-[#7C3AED] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#7C3AED] mb-4">
               How We Guide You
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto px-4">
               Comprehensive support at every step of your study abroad journey
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mr-20">
-            {[...services, ...services].map((service, index) => (
-              <div
-                key={index}
-                className={`bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 ${service.border}`}
-              >
-                <div
-                  className={`w-16 h-16 ${service.bg} rounded-full flex items-center justify-center mb-6`}
-                >
-                  <svg
-                    className={`w-8 h-8 ${service.iconColor}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    {service.icon}
-                  </svg>
-                </div>
-
-                <h3 className="text-2xl text-gray-900 mb-3">{service.title}</h3>
-
-                <p className="text-gray-600 leading-relaxed">
-                  {service.description}
-                </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* Service 1: Personalized Career Counseling */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
+                <UserCheck className="w-7 h-7 sm:w-8 sm:h-8 text-[#7C3AED]" />
               </div>
-            ))}
+              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
+                Personalized Career Counseling
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Understand your goals and align them with the right global
+                opportunities.
+              </p>
+            </div>
+
+            {/* Service 2: University & Admission Management */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#FCD34D]">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCD34D]/20 rounded-full flex items-center justify-center mb-6">
+                <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 text-[#F59E0B]" />
+              </div>
+              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
+                University & Admission Management
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                End-to-end support to secure offers from the right universities.
+              </p>
+            </div>
+
+            {/* Service 3: In-Depth Profile Evaluation */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
+                <ClipboardCheck className="w-7 h-7 sm:w-8 sm:h-8 text-[#7C3AED]" />
+              </div>
+              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
+                In-Depth Profile Evaluation
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Strengthen your profile to improve admission outcomes.
+              </p>
+            </div>
+
+            {/* Service 4: Scholarships & Financial Aid Guidance */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#FCD34D]">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCD34D]/20 rounded-full flex items-center justify-center mb-6">
+                <Wallet className="w-7 h-7 sm:w-8 sm:h-8 text-[#F59E0B]" />
+              </div>
+              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
+                Scholarships & Financial Aid Guidance
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Maximize funding opportunities to reduce your education cost.
+              </p>
+            </div>
+
+            {/* Service 5: Visa & Accommodation Support */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
+                <Home className="w-7 h-7 sm:w-8 sm:h-8 text-[#7C3AED]" />
+              </div>
+              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
+                Visa & Accommodation Support
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                A smooth transition from admission to arrival abroad.
+              </p>
+            </div>
+
+            {/* Service 6: Test Preparation & Exam Guidance */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#FCD34D]">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCD34D]/20 rounded-full flex items-center justify-center mb-6">
+                <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-[#F59E0B]" />
+              </div>
+              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
+                Test Preparation & Exam Guidance
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Prepare strategically to meet university and visa requirements.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-20 px-8 md:px-16 lg:px-24 bg-white">
-        <div className="max-w-7xl mx-auto mr-20">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section className="py-20 px-8 md:px-16 lg:px-24 bg-white" id="about">
+        <div className="max-w-7xl mx-auto ">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl md:text-5xl text-[#7C3AED] mb-6">
                 Why Choose Vidyayatra?
@@ -513,7 +574,7 @@ export default function App() {
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] p-12 rounded-3xl shadow-2xl text-white">
+            <div className="bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] p-12 rounded-3xl shadow-2xl text-white sm:p-12 md:p-12">
               <div className="text-center mb-8">
                 <p className="text-6xl mb-4">🎓</p>
                 <h3 className="text-3xl mb-2">Ready to Begin?</h3>
@@ -521,7 +582,10 @@ export default function App() {
                   Take the first step towards your international education
                 </p>
               </div>
-              <button className="w-full bg-[#FCD34D] text-gray-900 px-8 py-4 rounded-full hover:bg-[#FBBF24] transition-all duration-300 shadow-lg hover:shadow-xl">
+              <button
+                className="w-full bg-[#FCD34D] text-gray-900 px-8 py-4 rounded-full hover:bg-[#FBBF24] transition-all duration-300 shadow-lg hover:shadow-xl"
+                onClick={() => setOpenRegister(true)}
+              >
                 Schedule Free Consultation
               </button>
             </div>
@@ -530,8 +594,11 @@ export default function App() {
       </section>
 
       {/* Countries Section */}
-      <section className="py-20 px-8 md:px-16 lg:px-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto mr-20">
+      <section
+        className="py-20 px-8 md:px-16 lg:px-24 bg-gray-50"
+        id="countries"
+      >
+        <div className="max-w-7xl mx-auto ">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl text-[#7C3AED] mb-4">
               Choose Your Destination
@@ -543,12 +610,12 @@ export default function App() {
           </div>
 
           {/* Country Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {countries.map((country) => (
               <div
                 key={country.id}
                 onClick={() => setSelectedCountry(country.id)}
-                className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 h-52 sm:h-64"
               >
                 <div className="relative h-64">
                   <ImageWithFallback
@@ -580,7 +647,7 @@ export default function App() {
 
           {openRegister && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl">
+              <div className="bg-white rounded-3xl w-full max-w-xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-2xl text-[#7C3AED]">
                     Student Registration
@@ -714,14 +781,14 @@ export default function App() {
           {/* Admission Details Modal */}
           {selectedCountry && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-              <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-slideUp">
+              <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                 <div className="sticky top-0 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] p-8 rounded-t-3xl">
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="text-6xl mb-3">
                         {countries.find((c) => c.id === selectedCountry)?.flag}
                       </p>
-                      <h3 className="text-4xl text-white mb-2">
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl text-white mb-2">
                         {countries.find((c) => c.id === selectedCountry)?.name}
                       </h3>
                       <p className="text-white/90">Complete Admission Guide</p>
@@ -925,76 +992,65 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#1F1F1F] text-white py-12 px-8 md:px-16 lg:px-24">
-        <div className="max-w-7xl mx-auto mr-20">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-2xl mb-4 text-[#FCD34D]">Vidyayatra</h3>
-              <p className="text-gray-400">
+      <footer className="bg-[#1F1F1F] text-white py-14 px-6 sm:px-8 md:px-16 lg:px-24">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div className="flex flex-col items-start gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  <img
+                    src="src/public/logo.png"
+                    alt="Vidyayatra Logo"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className="text-2xl text-[#FCD34D]">Vidyayatra</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
                 Your trusted partner in international education
               </p>
             </div>
+
+            {/* Contact */}
             <div>
-              <h4 className="mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a
-                    href="#about"
-                    className="hover:text-[#FCD34D] transition-colors"
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#services"
-                    className="hover:text-[#FCD34D] transition-colors"
-                  >
-                    Services
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#blog"
-                    className="hover:text-[#FCD34D] transition-colors"
-                  >
-                    Blog
-                  </a>
-                </li>
+              <h4 className="mb-4 font-semibold">Contact</h4>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li>Vidyayatrasolutions@gmail.com</li>
+                <li>92119 17228</li>
               </ul>
             </div>
+
+            {/* Follow Us */}
             <div>
-              <h4 className="mb-4">Contact</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>info@vidyayatra.com</li>
-                <li>+1 (555) 123-4567</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-4">Follow Us</h4>
+              <h4 className="mb-4 font-semibold">Follow Us</h4>
               <div className="flex gap-4">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/share/1738SVe5Rs/"
                   className="w-10 h-10 bg-[#7C3AED] rounded-full flex items-center justify-center hover:bg-[#FCD34D] transition-colors"
                 >
                   <span className="text-white">f</span>
                 </a>
+
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/vidyayatra/"
                   className="w-10 h-10 bg-[#7C3AED] rounded-full flex items-center justify-center hover:bg-[#FCD34D] transition-colors"
                 >
                   <span className="text-white">in</span>
                 </a>
+
                 <a
-                  href="#"
+                  href="https://www.instagram.com/vidyayatra_studyabroad?igsh=aDVtZ2E0YWhxOHU="
                   className="w-10 h-10 bg-[#7C3AED] rounded-full flex items-center justify-center hover:bg-[#FCD34D] transition-colors"
                 >
-                  <span className="text-white">tw</span>
+                  <span className="text-white">ig</span>
                 </a>
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+
+          {/* Bottom bar */}
+          <div className="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400 text-sm">
             <p>&copy; 2026 Vidyayatra. All rights reserved.</p>
           </div>
         </div>
