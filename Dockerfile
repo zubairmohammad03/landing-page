@@ -1,13 +1,13 @@
 FROM nginx:alpine
 
-# Copy website
+# Remove default nginx config
+RUN rm /etc/nginx/nginx.conf
+
+# Copy our nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy website files
 COPY . /usr/share/nginx/html
-
-# Copy nginx template
-COPY default.conf.template /etc/nginx/templates/default.conf.template
-
-# Cloud Run provides PORT
-ENV PORT=8080
 
 EXPOSE 8080
 
