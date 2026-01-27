@@ -258,7 +258,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center">
               <img
-                src="src/public/logo.png"
+                src="/logo.png"
                 alt="Vidyayatra Logo"
                 className="w-full h-full object-contain"
               />
@@ -1000,7 +1000,7 @@ export default function App() {
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full overflow-hidden">
                   <img
-                    src="src/public/logo.png"
+                    src="/logo.png"
                     alt="Vidyayatra Logo"
                     className="w-full h-full object-contain"
                   />
@@ -1016,7 +1016,7 @@ export default function App() {
             <div>
               <h4 className="mb-4 font-semibold">Contact</h4>
               <ul className="space-y-2 text-gray-400 text-sm">
-                <li>Vidyayatrasolutions@gmail.com</li>
+                <li>vidyayatrasolutions@gmail.com</li>
                 <li>+91-92119 17228</li>
               </ul>
             </div>
