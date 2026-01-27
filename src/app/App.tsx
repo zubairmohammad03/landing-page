@@ -3,7 +3,7 @@ import { supabase } from "../utils/supabase";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import {
   UserCheck,
   GraduationCap,
@@ -13,11 +13,99 @@ import {
   BookOpen,
 } from "lucide-react";
 
+type Service = {
+  id: string;
+  title: string;
+  shortLine: string;
+  points: string[];
+  icon: JSX.Element;
+};
+
 export default function App() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [openRegister, setOpenRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeService, setActiveService] = useState<Service | null>(null);
+
+  const serviceDetails: Service[] = [
+    {
+      id: "counseling",
+      title: "Personalized Career Counseling",
+      shortLine:
+        "Understand your goals and align them with the right global opportunities.",
+      icon: <UserCheck className="w-8 h-8 text-[#7C3AED]" />,
+      points: [
+        "One-to-one counseling sessions with experienced advisors",
+        "Assessment of academic background, interests, and career plans",
+        "Guidance on country, course, and intake selection",
+        "Clear roadmap tailored to your long-term goals",
+      ],
+    },
+    {
+      id: "admission",
+      title: "University & Admission Management",
+      shortLine:
+        "End-to-end support to secure offers from the right universities",
+      icon: <GraduationCap className="w-8 h-8 text-[#7C3AED]" />,
+      points: [
+        "Shortlisting of universities based on profile strength",
+        "Application strategy planning and timeline management",
+        "Documentation support and application submission",
+        "Faster offer turnaround with expert follow-ups",
+      ],
+    },
+    {
+      id: "profile",
+      title: "In-depth Profile Evaluation & Strategy",
+      shortLine: "Strengthen your profile to improve admission outcomes.",
+      icon: <ClipboardCheck className="w-8 h-8 text-[#7C3AED]" />,
+      points: [
+        "Academic and extracurricular profile assessment",
+        "Identification of strengths and improvement areas",
+        "Course and university fit analysis",
+        "Guidance to enhance competitiveness for top institutions",
+      ],
+    },
+    {
+      id: "finance",
+      title: "Scholarships & Financial Aid Guidance",
+      shortLine:
+        "Maximize funding opportunities to reduce your education cost.",
+      icon: <Wallet className="w-8 h-8 text-[#7C3AED]" />,
+      points: [
+        "Identification of eligible scholarships and grants",
+        "Support for merit-based and need-based funding options",
+        "Assistance with scholarship applications and documentation",
+        "Transparent guidance on funding expectations",
+      ],
+    },
+    {
+      id: "visa",
+      title: "Visa & Accommodation Support",
+      shortLine: "A smooth transition from admission to arrival abroad.",
+      icon: <Home className="w-8 h-8 text-[#7C3AED]" />,
+      points: [
+        "Complete visa filing and documentation assistance",
+        "Interview preparation and compliance guidance",
+        "Support in finding safe and verified student accommodation",
+        "Pre-departure assistance for a stress-free move",
+      ],
+    },
+    {
+      id: "exams",
+      title: "TTest Preparation & Exam Guidance",
+      shortLine:
+        "Prepare strategically to meet university and visa requirements.",
+      icon: <BookOpen className="w-8 h-8 text-[#7C3AED]" />,
+      points: [
+        "Guidance on required exams (IELTS, TOEFL, GRE, GMAT, etc.)",
+        "Test selection based on country and university requirements",
+        "Preparation strategy and resource recommendations",
+        "Timelines aligned with application deadlines",
+      ],
+    },
+  ];
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -424,96 +512,81 @@ export default function App() {
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#7C3AED] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#7C3AED] mb-4">
               How We Guide You
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Comprehensive support at every step of your study abroad journey
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+              Structured, end-to-end guidance at every stage of your study
+              abroad journey
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Service 1: Personalized Career Counseling */}
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
-                <UserCheck className="w-7 h-7 sm:w-8 sm:h-8 text-[#7C3AED]" />
-              </div>
-              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
-                Personalized Career Counseling
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                Understand your goals and align them with the right global
-                opportunities.
-              </p>
-            </div>
+            {serviceDetails.map((service) => (
+              <div
+                key={service.id}
+                onClick={() => setActiveService(service)}
+                className="cursor-pointer rounded-xl border border-gray-200 p-6 bg-white shadow-sm hover:shadow-md transition"
+              >
+                <div className="mb-4">{service.icon}</div>
 
-            {/* Service 2: University & Admission Management */}
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#FCD34D]">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCD34D]/20 rounded-full flex items-center justify-center mb-6">
-                <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 text-[#F59E0B]" />
-              </div>
-              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
-                University & Admission Management
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                End-to-end support to secure offers from the right universities.
-              </p>
-            </div>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900">
+                  {service.title}
+                </h3>
 
-            {/* Service 3: In-Depth Profile Evaluation */}
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
-                <ClipboardCheck className="w-7 h-7 sm:w-8 sm:h-8 text-[#7C3AED]" />
-              </div>
-              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
-                In-Depth Profile Evaluation
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                Strengthen your profile to improve admission outcomes.
-              </p>
-            </div>
+                {/* Short descriptive line */}
+                <p className="text-sm text-gray-500 mb-3 leading-relaxed">
+                  {service.shortLine}
+                </p>
 
-            {/* Service 4: Scholarships & Financial Aid Guidance */}
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#FCD34D]">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCD34D]/20 rounded-full flex items-center justify-center mb-6">
-                <Wallet className="w-7 h-7 sm:w-8 sm:h-8 text-[#F59E0B]" />
+                <p className="text-sm text-gray-600 font-medium">
+                  Click to explore detailed support →
+                </p>
               </div>
-              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
-                Scholarships & Financial Aid Guidance
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                Maximize funding opportunities to reduce your education cost.
-              </p>
-            </div>
-
-            {/* Service 5: Visa & Accommodation Support */}
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#7C3AED]">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#7C3AED]/10 rounded-full flex items-center justify-center mb-6">
-                <Home className="w-7 h-7 sm:w-8 sm:h-8 text-[#7C3AED]" />
-              </div>
-              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
-                Visa & Accommodation Support
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                A smooth transition from admission to arrival abroad.
-              </p>
-            </div>
-
-            {/* Service 6: Test Preparation & Exam Guidance */}
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-[#FCD34D]">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCD34D]/20 rounded-full flex items-center justify-center mb-6">
-                <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-[#F59E0B]" />
-              </div>
-              <h3 className="text-xl sm:text-2xl text-gray-900 mb-3">
-                Test Preparation & Exam Guidance
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                Prepare strategically to meet university and visa requirements.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
+
+      {activeService && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setActiveService(null)}
+          />
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-xl max-w-md w-full p-6 z-10">
+            <button
+              onClick={() => setActiveService(null)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-black"
+            >
+              ✕
+            </button>
+
+            <h3 className="text-2xl font-semibold mb-4">
+              {activeService.title}
+            </h3>
+
+            <ul className="space-y-3 mb-6">
+              {activeService.points.map((point, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <span className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2" />
+                  <span className="text-gray-700">{point}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              onClick={() => setActiveService(null)}
+              className="w-full py-2 rounded-md bg-yellow-400 text-black font-medium hover:bg-yellow-500 transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Why Choose Us Section */}
       <section className="py-20 px-8 md:px-16 lg:px-24 bg-white" id="about">
