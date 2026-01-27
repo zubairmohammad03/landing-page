@@ -252,7 +252,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white relative overflow-x-hidden">
       {/* Right Side Navigation */}
-      <nav className="fixed top-0 left-0 right-0 bg-[#FDE68A]/95 backdrop-blur-sm shadow-sm z-50 px-8 md:px-16 lg:px-24 py-4">
+      <nav className="fixed top-0 left-0 right-0 bg-[#ffffff] backdrop-blur-sm shadow-sm z-50 px-8 md:px-16 lg:px-24 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
@@ -1017,7 +1017,7 @@ export default function App() {
               <h4 className="mb-4 font-semibold">Contact</h4>
               <ul className="space-y-2 text-gray-400 text-sm">
                 <li>Vidyayatrasolutions@gmail.com</li>
-                <li>92119 17228</li>
+                <li>+91-92119 17228</li>
               </ul>
             </div>
 
