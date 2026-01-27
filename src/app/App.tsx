@@ -279,7 +279,7 @@ export default function App() {
 
             <button
               onClick={() => setOpenRegister(true)}
-              className="bg-[#7C3AED] text-white px-6 py-2 rounded-full hover:bg-[#6D28D9] shadow-md transition"
+              className="bg-[#FCD34D] text-gray-900 px-6 py-2 rounded-full hover:bg-[#FBBF24] shadow-md transition"
             >
               Register Now
             </button>
