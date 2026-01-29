@@ -83,7 +83,7 @@ export default function App() {
     {
       id: "visa",
       title: "Visa & Accommodation Support",
-      shortLine: "A smooth transition from admission to arrival abroad.",
+      shortLine: "From admission to arrival abroad, made simple and stress-free.",
       icon: <Home className="w-8 h-8 text-[#7C3AED]" />,
       points: [
         "Complete visa filing and documentation assistance",
@@ -94,7 +94,7 @@ export default function App() {
     },
     {
       id: "exams",
-      title: "TTest Preparation & Exam Guidance",
+      title: "Test Preparation & Exam Guidance",
       shortLine:
         "Prepare strategically to meet university and visa requirements.",
       icon: <BookOpen className="w-8 h-8 text-[#7C3AED]" />,
@@ -312,7 +312,7 @@ export default function App() {
       name: "Study in UAE",
       flag: "🇦🇪",
       image:
-        "https://images.unsplash.com/photo-1580674285054-bed31e145f59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxEdWJhaSUyMHNreWxpbmV8ZW58MXx8fHwxNzY3ODc3NjI3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "https://www.agoda.com/wp-content/uploads/2024/04/Featured-image-Dubai-UAE.jpg",
       admissionInfo: {
         requirements: [
           "Academic transcripts and certificates",
