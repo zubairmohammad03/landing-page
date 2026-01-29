@@ -414,9 +414,9 @@ export default function App() {
                     setOpenRegister(true);
                     setMenuOpen(false);
                   }}
-                  className="bg-[#7C3AED] text-white py-2 rounded-full hover:bg-[#6D28D9] transition"
+                  className="bg-[#FCD34D] text-gray-900 py-2 rounded-full hover:bg-[#FBBF24] transition"
                 >
-                  Let’s Connect
+                  Register Now
                 </button>
               </div>
             </div>
