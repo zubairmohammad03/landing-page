@@ -3,7 +3,7 @@ import { supabase } from "../utils/supabase";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { JSX, useState } from "react";
+import { JSX, useState, useRef } from "react";
 import {
   UserCheck,
   GraduationCap,
@@ -11,6 +11,11 @@ import {
   Wallet,
   Home,
   BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  Quote,
+  Star,
+  Plane,
 } from "lucide-react";
 
 type Service = {
@@ -21,12 +26,41 @@ type Service = {
   icon: JSX.Element;
 };
 
+type VisitorVisa = {
+  id: string;
+  country: string;
+  flag: string;
+  flagImage: string;
+  visaType: string;
+  processingTime: string;
+  stayDuration: string;
+  requirements: string[];
+  documents: string[];
+  fees: string;
+  tips: string[];
+};
+
+type Testimonial = {
+  id: string;
+  name: string;
+  destination: string;
+  university: string;
+  course: string;
+  quote: string;
+  rating: number;
+  photo: string;
+};
+
 export default function App() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [openRegister, setOpenRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeService, setActiveService] = useState<Service | null>(null);
+  const [selectedVisitorVisa, setSelectedVisitorVisa] =
+    useState<VisitorVisa | null>(null);
+
+  const visitorVisaSliderRef = useRef<Slider | null>(null);
 
   const serviceDetails: Service[] = [
     {
@@ -83,7 +117,8 @@ export default function App() {
     {
       id: "visa",
       title: "Visa & Accommodation Support",
-      shortLine: "From admission to arrival abroad, made simple and stress-free.",
+      shortLine:
+        "From admission to arrival abroad, made simple and stress-free.",
       icon: <Home className="w-8 h-8 text-[#7C3AED]" />,
       points: [
         "Complete visa filing and documentation assistance",
@@ -103,6 +138,426 @@ export default function App() {
         "Test selection based on country and university requirements",
         "Preparation strategy and resource recommendations",
         "Timelines aligned with application deadlines",
+      ],
+    },
+  ];
+
+  const testimonials: Testimonial[] = [
+    {
+      id: "1",
+      name: "Arjun Mehta",
+      destination: "UK",
+      university: "United Kingdom",
+      course: "Master's Student",
+      quote:
+        "Vidyayatra made my UK study abroad journey incredibly smooth. From university shortlisting and application support to visa guidance, their team was always available to answer my questions. Thanks to their expertise, I secured admission to my preferred university and received my visa without any hassle. I highly recommend Vidyayatra to anyone planning to study in the UK.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
+    },
+    {
+      id: "2",
+      name: "Priya Sharma",
+      destination: "Canada",
+      university: "Canada",
+      course: "Postgraduate Student",
+      quote:
+        "Choosing Vidyayatra was one of the best decisions I made for my higher education plans. Their counselors guided me through every step, from selecting the right Canadian college to preparing my visa documents. The process felt organized and stress-free, and I am now pursuing my dream program in Canada. Their support was exceptional throughout.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80",
+    },
+    {
+      id: "3",
+      name: "Rahul Verma",
+      destination: "Germany",
+      university: "Germany",
+      course: "Master's Student",
+      quote:
+        "Studying in Germany seemed complicated at first, especially with university applications and visa requirements. Vidyayatra simplified everything. Their team helped me identify the right programs, prepare my documents, and navigate the admission process efficiently. The entire experience was seamless, and I am grateful for their professional guidance.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+    },
+    {
+      id: "4",
+      name: "Ayesha Khan",
+      destination: "UK",
+      university: "United Kingdom",
+      course: "MSc Student",
+      quote:
+        "The team at Vidyayatra provided excellent support throughout my UK application journey. Their guidance on university selection, SOP preparation, and visa documentation made the entire process straightforward. I always felt confident knowing I had experts assisting me at every stage.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80",
+    },
+    {
+      id: "5",
+      name: "Rohan Gupta",
+      destination: "USA",
+      university: "United States",
+      course: "Master's Student",
+      quote:
+        "I was overwhelmed by the admission requirements and visa process, but Vidyayatra made everything simple. Their counselors helped me shortlist universities that matched my profile and guided me until I landed in the USA. Their professionalism and responsiveness were outstanding.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
+    },
+    {
+      id: "6",
+      name: "Sneha Patel",
+      destination: "Australia",
+      university: "Australia",
+      course: "MBA Student",
+      quote:
+        "From choosing the right university to securing my student visa, Vidyayatra handled every step efficiently. Their personalized counseling and prompt support ensured a smooth transition to Australia. I couldn't have asked for a better study abroad partner.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
+    },
+    {
+      id: "7",
+      name: "Karan Malhotra",
+      destination: "Germany",
+      university: "Germany",
+      course: "MSc Student",
+      quote:
+        "Germany's application process can be challenging, but Vidyayatra made it surprisingly easy. Their team assisted me with university applications, document preparation, and visa formalities. Thanks to their support, I am now pursuing my master's degree in Germany with complete peace of mind.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80",
+    },
+    {
+      id: "8",
+      name: "Neha Agarwal",
+      destination: "USA",
+      university: "United States",
+      course: "Bachelor's Student",
+      quote:
+        "What impressed me most about Vidyayatra was their transparency and dedication. They provided honest advice, helped me strengthen my application, and guided me through the visa interview process. Today, I'm studying at my dream university in the USA, and I couldn't be more grateful.",
+      rating: 5,
+      photo:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+    },
+  ];
+
+  const visitorVisaCountries: VisitorVisa[] = [
+    {
+      id: "uk-visitor",
+      country: "United Kingdom",
+      flag: "🇬🇧",
+      flagImage:
+        "https://flagcdn.com/w640/gb.png",
+      visaType: "Standard Visitor Visa",
+      processingTime: "3–4 weeks",
+      stayDuration: "Up to 6 months",
+      requirements: [
+        "Valid passport with at least 6 months validity",
+        "Proof of sufficient funds for your stay",
+        "Confirmed travel itinerary and accommodation details",
+        "Intent to leave the UK at the end of your visit",
+        "No intention to work or study (over 30 days)",
+      ],
+      documents: [
+        "Completed online visa application form",
+        "Passport-sized photographs",
+        "Bank statements (last 6 months)",
+        "Employment/business proof",
+        "Travel insurance",
+        "Invitation letter (if visiting family/friends)",
+      ],
+      fees: "£115 (approx ₹12,000)",
+      tips: [
+        "Apply at least 4–6 weeks before travel",
+        "Provide clear financial documents",
+        "Be honest during the biometrics appointment",
+      ],
+    },
+    {
+      id: "usa-visitor",
+      country: "United States",
+      flag: "🇺🇸",
+      flagImage:
+        "https://flagcdn.com/w640/us.png",
+      visaType: "B1/B2 Tourist Visa",
+      processingTime: "3–5 weeks (interview wait may vary)",
+      stayDuration: "Up to 6 months",
+      requirements: [
+        "Valid passport",
+        "Non-immigrant intent — strong ties to home country",
+        "Proof of financial ability to cover trip expenses",
+        "Purpose of visit (tourism, medical, business)",
+        "No prior visa violations or overstay history",
+      ],
+      documents: [
+        "DS-160 form confirmation page",
+        "Visa interview appointment letter",
+        "Passport-sized photo (US specifications)",
+        "Bank statements (last 6 months)",
+        "Employment letter or business documents",
+        "Travel itinerary & hotel bookings",
+        "Previous travel history (old passports)",
+      ],
+      fees: "$185 (approx ₹15,500)",
+      tips: [
+        "Be confident and concise during the visa interview",
+        "Show strong ties to India (job, property, family)",
+        "Carry all original documents to the interview",
+      ],
+    },
+    {
+      id: "canada-visitor",
+      country: "Canada",
+      flag: "🇨🇦",
+      flagImage:
+        "https://flagcdn.com/w640/ca.png",
+      visaType: "Temporary Resident Visa (TRV)",
+      processingTime: "2–4 weeks",
+      stayDuration: "Up to 6 months",
+      requirements: [
+        "Valid passport",
+        "Proof of funds for the duration of stay",
+        "Purpose of visit (tourism, family visit, business)",
+        "Intent to return to home country",
+        "Good health and no criminal record",
+      ],
+      documents: [
+        "Completed IMM 5257 application form",
+        "Two recent passport-sized photographs",
+        "Bank statements (last 4–6 months)",
+        "Employment/business proof",
+        "Travel itinerary",
+        "Invitation letter (if applicable)",
+        "Family information form (IMM 5645)",
+      ],
+      fees: "CAD $100 (approx ₹6,200)",
+      tips: [
+        "Online application is faster than paper-based",
+        "Provide a clear travel purpose",
+        "Include previous travel history for stronger applications",
+      ],
+    },
+    {
+      id: "australia-visitor",
+      country: "Australia",
+      flag: "🇦🇺",
+      flagImage:
+        "https://flagcdn.com/w640/au.png",
+      visaType: "Visitor Visa (Subclass 600)",
+      processingTime: "2–4 weeks",
+      stayDuration: "Up to 3, 6, or 12 months",
+      requirements: [
+        "Valid passport",
+        "Genuine intention to visit temporarily",
+        "Sufficient funds for your stay",
+        "Health and character requirements",
+        "Health insurance (recommended)",
+      ],
+      documents: [
+        "Completed online application (ImmiAccount)",
+        "Passport-sized photographs",
+        "Bank statements (last 6 months)",
+        "Proof of employment or business",
+        "Travel itinerary & accommodation bookings",
+        "Invitation letter from host (if applicable)",
+      ],
+      fees: "AUD $190 (approx ₹10,500)",
+      tips: [
+        "Apply online through ImmiAccount for faster processing",
+        "Medical exams may be required for longer stays",
+        "Show evidence of ties to home country",
+      ],
+    },
+    {
+      id: "germany-visitor",
+      country: "Germany",
+      flag: "🇩🇪",
+      flagImage:
+        "https://flagcdn.com/w640/de.png",
+      visaType: "Schengen Visa (Short Stay)",
+      processingTime: "2–3 weeks",
+      stayDuration: "Up to 90 days in 180-day period",
+      requirements: [
+        "Valid passport (at least 3 months beyond stay)",
+        "Proof of accommodation in Germany",
+        "Travel medical insurance (min €30,000 coverage)",
+        "Proof of financial means",
+        "Return flight booking",
+      ],
+      documents: [
+        "Completed Schengen visa application form",
+        "Two recent passport-sized photographs",
+        "Travel medical insurance certificate",
+        "Bank statements (last 3 months)",
+        "Cover letter explaining purpose of visit",
+        "Flight and hotel reservations",
+        "Employment proof / leave approval",
+      ],
+      fees: "€80 (approx ₹7,200)",
+      tips: [
+        "Book appointment at VFS Global early",
+        "Schengen visa allows travel to all 27 Schengen countries",
+        "Apply no earlier than 6 months before travel",
+      ],
+    },
+    {
+      id: "uae-visitor",
+      country: "United Arab Emirates",
+      flag: "🇦🇪",
+      flagImage:
+        "https://flagcdn.com/w640/ae.png",
+      visaType: "Tourist Visa (30/60/90 days)",
+      processingTime: "3–5 business days",
+      stayDuration: "30, 60, or 90 days",
+      requirements: [
+        "Valid passport with 6 months validity",
+        "Confirmed return ticket",
+        "Hotel booking or host details",
+        "Sufficient funds for stay",
+        "No UAE visa violations history",
+      ],
+      documents: [
+        "Passport copy (colored scan)",
+        "Passport-sized photograph (white background)",
+        "Confirmed flight tickets",
+        "Hotel reservation or host's visa/Emirates ID",
+        "Bank statement (last 3 months)",
+        "Travel insurance (recommended)",
+      ],
+      fees: "AED 300–1000 (approx ₹6,800–₹22,700) based on duration",
+      tips: [
+        "Apply through airlines or authorized travel agents",
+        "E-visa is available — no need to visit embassy",
+        "Fastest visa processing among all countries",
+      ],
+    },
+    {
+      id: "nz-visitor",
+      country: "New Zealand",
+      flag: "🇳🇿",
+      flagImage:
+        "https://flagcdn.com/w640/nz.png",
+      visaType: "Visitor Visa",
+      processingTime: "2–4 weeks",
+      stayDuration: "Up to 9 months",
+      requirements: [
+        "Valid passport",
+        "Proof of onward travel",
+        "Evidence of sufficient funds (NZD $1,000/month)",
+        "Good health and character",
+        "Genuine intent to visit temporarily",
+      ],
+      documents: [
+        "Completed online visa application",
+        "Passport-sized photographs",
+        "Bank statements (last 3–6 months)",
+        "Employment or business proof",
+        "Travel itinerary",
+        "Chest X-ray (if staying over 6 months)",
+        "Police clearance certificate",
+      ],
+      fees: "NZD $246 (approx ₹12,500)",
+      tips: [
+        "Apply online through Immigration New Zealand",
+        "Longer stays may need medical and police certificates",
+        "Show strong ties to home country",
+      ],
+    },
+    {
+      id: "france-visitor",
+      country: "France",
+      flag: "🇫🇷",
+      flagImage:
+        "https://flagcdn.com/w640/fr.png",
+      visaType: "Schengen Visa (Short Stay)",
+      processingTime: "2–3 weeks",
+      stayDuration: "Up to 90 days in 180-day period",
+      requirements: [
+        "Valid passport (at least 3 months beyond stay)",
+        "Proof of accommodation",
+        "Travel medical insurance (min €30,000 coverage)",
+        "Financial proof for duration of stay",
+        "Return flight reservation",
+      ],
+      documents: [
+        "Completed Schengen visa application form",
+        "Two recent passport-sized photographs",
+        "Travel medical insurance",
+        "Bank statements (last 3 months)",
+        "Cover letter with travel purpose",
+        "Hotel bookings or invitation letter",
+        "Employment proof / leave letter",
+      ],
+      fees: "€80 (approx ₹7,200)",
+      tips: [
+        "Apply through VFS Global France",
+        "Also valid for travel to other Schengen countries",
+        "Book appointment well in advance during peak season",
+      ],
+    },
+    {
+      id: "singapore-visitor",
+      country: "Singapore",
+      flag: "🇸🇬",
+      flagImage:
+        "https://flagcdn.com/w640/sg.png",
+      visaType: "Tourist Visa",
+      processingTime: "3–5 business days",
+      stayDuration: "Up to 30 days",
+      requirements: [
+        "Valid passport with 6 months validity",
+        "Confirmed return ticket",
+        "Sufficient funds for stay",
+        "Hotel booking or local sponsor details",
+        "Yellow fever vaccination (if from affected country)",
+      ],
+      documents: [
+        "Completed Form 14A",
+        "Recent passport-sized photograph",
+        "Passport copy",
+        "Bank statements (last 3 months)",
+        "Employment/business proof",
+        "Flight itinerary",
+        "Local contact/sponsor details with Singapore ID",
+      ],
+      fees: "SGD $30 (approx ₹1,900)",
+      tips: [
+        "Must be applied through an authorized agent or Singapore-based sponsor",
+        "E-visa available — no passport submission required",
+        "One of the easiest Asian visas to obtain",
+      ],
+    },
+    {
+      id: "ireland-visitor",
+      country: "Ireland",
+      flag: "🇮🇪",
+      flagImage:
+        "https://flagcdn.com/w640/ie.png",
+      visaType: "Short Stay 'C' Visa",
+      processingTime: "4–8 weeks",
+      stayDuration: "Up to 90 days",
+      requirements: [
+        "Valid passport",
+        "Proof of funds to cover expenses",
+        "Evidence of purpose of visit",
+        "Private medical insurance",
+        "Intent to return to home country",
+      ],
+      documents: [
+        "Completed online application (AVATS system)",
+        "Two passport-sized photographs",
+        "Bank statements (last 6 months)",
+        "Employment/business proof",
+        "Detailed travel itinerary",
+        "Accommodation proof",
+        "Travel insurance",
+        "Invitation letter (if visiting someone)",
+      ],
+      fees: "€60 (single entry) / €100 (multi entry) (approx ₹5,400–₹9,000)",
+      tips: [
+        "Apply through the AVATS online system",
+        "Ireland is NOT part of Schengen — separate visa required",
+        "Processing can take longer, apply 8+ weeks ahead",
       ],
     },
   ];
@@ -167,11 +622,64 @@ export default function App() {
     pauseOnHover: false,
   };
 
+  const visitorVisaSliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 1280,
+        settings: { slidesToShow: 4 },
+      },
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 3 },
+      },
+      {
+        breakpoint: 768,
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 480,
+        settings: { slidesToShow: 1 },
+      },
+    ],
+  };
+
+  const testimonialSliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 600,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    pauseOnHover: true,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 640,
+        settings: { slidesToShow: 1 },
+      },
+    ],
+  };
+
   const countries = [
     {
       id: "uk",
       name: "Study in UK",
       flag: "🇬🇧",
+      flagImage: "https://flagcdn.com/w80/gb.png",
       image:
         "https://images.unsplash.com/photo-1689446800111-28fc9cb0583d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxMb25kb24lMjBCaWclMjBCZW4lMjBVS3xlbnwxfHx8fDE3Njc4Nzc2MjV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       admissionInfo: {
@@ -198,6 +706,7 @@ export default function App() {
       id: "usa",
       name: "Study in USA",
       flag: "🇺🇸",
+      flagImage: "https://flagcdn.com/w80/us.png",
       image:
         "https://images.unsplash.com/photo-1734900715044-ef86383fd704?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxOZXclMjBZb3JrJTIwQ2l0eSUyMFVTQXxlbnwxfHx8fDE3Njc4Nzc2MjV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       admissionInfo: {
@@ -229,6 +738,7 @@ export default function App() {
       id: "canada",
       name: "Study in Canada",
       flag: "🇨🇦",
+      flagImage: "https://flagcdn.com/w80/ca.png",
       image:
         "https://images.unsplash.com/photo-1668882698355-923d532fa985?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxUb3JvbnRvJTIwQ2FuYWRhJTIwc2t5bGluZXxlbnwxfHx8fDE3Njc4NTY2NTd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       admissionInfo: {
@@ -256,6 +766,7 @@ export default function App() {
       id: "australia",
       name: "Study in Australia",
       flag: "🇦🇺",
+      flagImage: "https://flagcdn.com/w80/au.png",
       image:
         "https://images.unsplash.com/photo-1718185795639-c442aff612cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxTeWRuZXklMjBPcGVyYSUyMEhvdXNlJTIwQXVzdHJhbGlhfGVufDF8fHx8MTc2Nzg1NjY1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       admissionInfo: {
@@ -284,6 +795,7 @@ export default function App() {
       id: "germany",
       name: "Study in Germany",
       flag: "🇩🇪",
+      flagImage: "https://flagcdn.com/w80/de.png",
       image:
         "https://images.unsplash.com/photo-1618260397416-12801af7ff7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxCZXJsaW4lMjBHZXJtYW55JTIwYXJjaGl0ZWN0dXJlfGVufDF8fHx8MTc2Nzg3NzYyNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       admissionInfo: {
@@ -311,6 +823,7 @@ export default function App() {
       id: "uae",
       name: "Study in UAE",
       flag: "🇦🇪",
+      flagImage: "https://flagcdn.com/w80/ae.png",
       image:
         "https://www.agoda.com/wp-content/uploads/2024/04/Featured-image-Dubai-UAE.jpg",
       admissionInfo: {
@@ -361,8 +874,20 @@ export default function App() {
             <a href="#about" className="text-gray-700 hover:text-[#7C3AED]">
               Why Choose Us
             </a>
+            <a
+              href="#testimonials"
+              className="text-gray-700 hover:text-[#7C3AED]"
+            >
+              Testimonials
+            </a>
             <a href="#countries" className="text-gray-700 hover:text-[#7C3AED]">
               Destinations
+            </a>
+            <a
+              href="#visitor-visa"
+              className="text-gray-700 hover:text-[#7C3AED]"
+            >
+              Visitor's Visa
             </a>
 
             <button
@@ -402,11 +927,27 @@ export default function App() {
                 </a>
 
                 <a
+                  href="#testimonials"
+                  className="text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Testimonials
+                </a>
+
+                <a
                   href="#countries"
                   className="text-gray-700"
                   onClick={() => setMenuOpen(false)}
                 >
                   Destinations
+                </a>
+
+                <a
+                  href="#visitor-visa"
+                  className="text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Visitor's Visa
                 </a>
 
                 <button
@@ -666,6 +1207,89 @@ export default function App() {
         </div>
       </section>
 
+      {/* ==================== TESTIMONIALS SECTION ==================== */}
+      <section
+        id="testimonials"
+        className="py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gray-50"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#7C3AED] mb-4">
+              What Our Students Say
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+              Real stories from students who trusted Vidyayatra to shape their
+              international education journey
+            </p>
+          </div>
+
+          <Slider {...testimonialSliderSettings}>
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className="px-3">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col p-5 h-[370px]">
+                  {/* Top: Photo + Student Info */}
+                  <div className="flex items-center gap-3 mb-3 flex-shrink-0">
+                    <img
+                      src={testimonial.photo}
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-[#7C3AED]/20 flex-shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <h4 className="font-semibold text-gray-900 text-sm truncate">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-xs text-gray-500 truncate">
+                        {testimonial.course}
+                      </p>
+                      <p className="text-xs text-[#7C3AED] truncate flex items-center gap-1">
+                        <img
+                          src={
+                            {
+                              UK: "https://flagcdn.com/w40/gb.png",
+                              Canada: "https://flagcdn.com/w40/ca.png",
+                              Germany: "https://flagcdn.com/w40/de.png",
+                              USA: "https://flagcdn.com/w40/us.png",
+                              Australia: "https://flagcdn.com/w40/au.png",
+                              UAE: "https://flagcdn.com/w40/ae.png",
+                            }[testimonial.destination] || ""
+                          }
+                          alt=""
+                          className="w-4 h-3 object-cover rounded-[2px] flex-shrink-0"
+                        />
+                        {testimonial.university}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-gray-100 mb-3 flex-shrink-0" />
+
+                  {/* Quote */}
+                  <Quote className="w-6 h-6 text-[#7C3AED]/25 mb-1 flex-shrink-0" />
+                  <p className="text-gray-600 text-sm leading-relaxed mb-3 flex-grow overflow-hidden">
+                    "{testimonial.quote}"
+                  </p>
+
+                  {/* Stars */}
+                  <div className="flex gap-1 flex-shrink-0 mt-auto">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < testimonial.rating
+                            ? "fill-[#FCD34D] text-[#FCD34D]"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Slider>
+        </div>
+      </section>
+
       {/* Countries Section */}
       <section
         className="py-20 px-8 md:px-16 lg:px-24 bg-gray-50"
@@ -698,7 +1322,11 @@ export default function App() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <p className="text-5xl mb-2">{country.flag}</p>
+                    <img
+                      src={country.flagImage}
+                      alt={`${country.name} flag`}
+                      className="w-10 h-7 object-cover rounded-sm shadow-md mb-2"
+                    />
                     <h3 className="text-2xl text-white">{country.name}</h3>
                     <p className="text-white/80 text-sm mt-2">
                       Click to view admission details →
@@ -858,9 +1486,11 @@ export default function App() {
                 <div className="sticky top-0 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] p-8 rounded-t-3xl">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-6xl mb-3">
-                        {countries.find((c) => c.id === selectedCountry)?.flag}
-                      </p>
+                      <img
+                        src={countries.find((c) => c.id === selectedCountry)?.flagImage}
+                        alt="flag"
+                        className="w-14 h-10 object-cover rounded-sm shadow-md mb-3"
+                      />
                       <h3 className="text-2xl sm:text-3xl md:text-4xl text-white mb-2">
                         {countries.find((c) => c.id === selectedCountry)?.name}
                       </h3>
@@ -1063,6 +1693,268 @@ export default function App() {
           )}
         </div>
       </section>
+
+      {/* ==================== VISITOR'S VISA SECTION ==================== */}
+      <section
+        id="visitor-visa"
+        className="py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-white"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#7C3AED] mb-4">
+              Visitor's Visa
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+              Planning a visit abroad? We assist with visitor visa applications
+              for tourism, family visits, and business trips
+            </p>
+          </div>
+
+          {/* Flag Slider with Custom Arrows */}
+          <div className="relative">
+            {/* Left Arrow */}
+            <button
+              onClick={() => visitorVisaSliderRef.current?.slickPrev()}
+              className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-[#7C3AED] hover:text-white hover:border-[#7C3AED] transition-all"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={() => visitorVisaSliderRef.current?.slickNext()}
+              className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-[#7C3AED] hover:text-white hover:border-[#7C3AED] transition-all"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            <div className="px-6 sm:px-8">
+              <Slider
+                ref={visitorVisaSliderRef}
+                {...visitorVisaSliderSettings}
+              >
+                {visitorVisaCountries.map((visa) => (
+                  <div key={visa.id} className="px-3">
+                    <div
+                      onClick={() => setSelectedVisitorVisa(visa)}
+                      className="cursor-pointer group"
+                    >
+                      <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group-hover:border-[#7C3AED]/40">
+                        {/* Flag Image */}
+                        <div className="p-4 pb-2">
+                          <div className="w-full h-28 sm:h-32 rounded-lg overflow-hidden border border-gray-100 shadow-sm">
+                            <img
+                              src={visa.flagImage}
+                              alt={`${visa.country} flag`}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Country Name */}
+                        <div className="px-4 pb-4 pt-1 text-center">
+                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base group-hover:text-[#7C3AED] transition-colors">
+                            {visa.country}
+                          </h3>
+                          <p className="text-xs text-gray-400 mt-1">
+                            Click for visa details →
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </Slider>
+            </div>
+          </div>
+
+          {/* CTA below slider */}
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={() => setOpenRegister(true)}
+              className="bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white px-10 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+            >
+              <Plane className="w-5 h-5" />
+              Apply for Visitor's Visa
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Visitor Visa Detail Modal */}
+      {selectedVisitorVisa && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] p-8 rounded-t-3xl">
+              <div className="flex justify-between items-start">
+                <div>
+                  <img
+                      src={selectedVisitorVisa.flagImage}
+                      alt={`${selectedVisitorVisa.country} flag`}
+                      className="w-14 h-10 object-cover rounded-sm shadow-md mb-3"
+                    />
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl text-white mb-2">
+                    {selectedVisitorVisa.country}
+                  </h3>
+                  <p className="text-white/90">
+                    {selectedVisitorVisa.visaType}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedVisitorVisa(null)}
+                  className="bg-white/20 hover:bg-white/30 text-white rounded-full p-3 transition-all"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-8 space-y-8">
+              {/* Quick Info Bar */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-[#7C3AED]/5 rounded-xl p-4 text-center border border-[#7C3AED]/10">
+                  <p className="text-xs text-gray-500 mb-1">Processing Time</p>
+                  <p className="font-semibold text-gray-900">
+                    {selectedVisitorVisa.processingTime}
+                  </p>
+                </div>
+                <div className="bg-[#FCD34D]/10 rounded-xl p-4 text-center border border-[#FCD34D]/20">
+                  <p className="text-xs text-gray-500 mb-1">Stay Duration</p>
+                  <p className="font-semibold text-gray-900">
+                    {selectedVisitorVisa.stayDuration}
+                  </p>
+                </div>
+                <div className="bg-green-50 rounded-xl p-4 text-center border border-green-100">
+                  <p className="text-xs text-gray-500 mb-1">Visa Fees</p>
+                  <p className="font-semibold text-gray-900">
+                    {selectedVisitorVisa.fees}
+                  </p>
+                </div>
+              </div>
+
+              {/* Requirements */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-[#7C3AED]/10 rounded-full flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 text-[#7C3AED]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h4 className="text-2xl text-gray-900">Eligibility & Requirements</h4>
+                </div>
+                <ul className="space-y-3 ml-13">
+                  {selectedVisitorVisa.requirements.map((req, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-[#FCD34D] rounded-full mt-2 flex-shrink-0"></span>
+                      <span className="text-gray-700">{req}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Documents */}
+              <div className="bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-[#FCD34D]/30 rounded-full flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 text-[#F59E0B]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h4 className="text-xl text-gray-900">
+                    Documents Required
+                  </h4>
+                </div>
+                <ul className="space-y-3 ml-13">
+                  {selectedVisitorVisa.documents.map((doc, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-[#7C3AED] rounded-full mt-2 flex-shrink-0"></span>
+                      <span className="text-gray-700">{doc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Tips */}
+              <div className="bg-[#7C3AED]/5 p-6 rounded-2xl border border-[#7C3AED]/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-[#7C3AED]/20 rounded-full flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 text-[#7C3AED]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h4 className="text-xl text-gray-900">
+                    Helpful Tips
+                  </h4>
+                </div>
+                <ul className="space-y-3 ml-13">
+                  {selectedVisitorVisa.tips.map((tip, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <span className="text-[#FCD34D] mt-0.5">💡</span>
+                      <span className="text-gray-700">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* CTA Button */}
+              <div className="pt-4">
+                <button
+                  onClick={() => {
+                    setSelectedVisitorVisa(null);
+                    setOpenRegister(true);
+                  }}
+                  className="w-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white px-8 py-4 rounded-full hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  Apply for {selectedVisitorVisa.country} Visitor Visa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-[#1F1F1F] text-white py-14 px-6 sm:px-8 md:px-16 lg:px-24">
