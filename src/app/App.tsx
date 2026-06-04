@@ -635,19 +635,19 @@ export default function App() {
     responsive: [
       {
         breakpoint: 1280,
-        settings: { slidesToShow: 4 },
+        settings: { slidesToShow: 4, slidesToScroll: 1 },
       },
       {
         breakpoint: 1024,
-        settings: { slidesToShow: 3 },
+        settings: { slidesToShow: 3, slidesToScroll: 1 },
       },
       {
         breakpoint: 768,
-        settings: { slidesToShow: 2 },
+        settings: { slidesToShow: 2, slidesToScroll: 1 },
       },
       {
-        breakpoint: 480,
-        settings: { slidesToShow: 1 },
+        breakpoint: 540,
+        settings: { slidesToShow: 2, slidesToScroll: 1 },
       },
     ],
   };
@@ -665,11 +665,11 @@ export default function App() {
     responsive: [
       {
         breakpoint: 1024,
-        settings: { slidesToShow: 2 },
+        settings: { slidesToShow: 2, slidesToScroll: 1 },
       },
       {
-        breakpoint: 640,
-        settings: { slidesToShow: 1 },
+        breakpoint: 768,
+        settings: { slidesToShow: 1, slidesToScroll: 1, centerMode: true, centerPadding: "20px" },
       },
     ],
   };
@@ -1226,7 +1226,7 @@ export default function App() {
           <Slider {...testimonialSliderSettings}>
             {testimonials.map((testimonial) => (
               <div key={testimonial.id} className="px-3">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col p-5 h-[370px]">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col p-5 h-[350px] sm:h-[370px]">
                   {/* Top: Photo + Student Info */}
                   <div className="flex items-center gap-3 mb-3 flex-shrink-0">
                     <img
@@ -1715,7 +1715,7 @@ export default function App() {
             {/* Left Arrow */}
             <button
               onClick={() => visitorVisaSliderRef.current?.slickPrev()}
-              className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-[#7C3AED] hover:text-white hover:border-[#7C3AED] transition-all"
+              className="hidden sm:flex absolute -left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 items-center justify-center hover:bg-[#7C3AED] hover:text-white hover:border-[#7C3AED] transition-all"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -1723,26 +1723,26 @@ export default function App() {
             {/* Right Arrow */}
             <button
               onClick={() => visitorVisaSliderRef.current?.slickNext()}
-              className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-[#7C3AED] hover:text-white hover:border-[#7C3AED] transition-all"
+              className="hidden sm:flex absolute -right-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 items-center justify-center hover:bg-[#7C3AED] hover:text-white hover:border-[#7C3AED] transition-all"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
 
-            <div className="px-6 sm:px-8">
+            <div className="px-2 sm:px-8">
               <Slider
                 ref={visitorVisaSliderRef}
                 {...visitorVisaSliderSettings}
               >
                 {visitorVisaCountries.map((visa) => (
-                  <div key={visa.id} className="px-3">
+                  <div key={visa.id} className="px-1.5 sm:px-3 h-full">
                     <div
                       onClick={() => setSelectedVisitorVisa(visa)}
-                      className="cursor-pointer group"
+                      className="cursor-pointer group h-full"
                     >
-                      <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group-hover:border-[#7C3AED]/40">
+                      <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group-hover:border-[#7C3AED]/40 min-h-[190px] sm:min-h-[230px]">
                         {/* Flag Image */}
-                        <div className="p-4 pb-2">
-                          <div className="w-full h-28 sm:h-32 rounded-lg overflow-hidden border border-gray-100 shadow-sm">
+                        <div className="p-3 sm:p-4 pb-2">
+                          <div className="w-full h-24 sm:h-32 rounded-lg overflow-hidden border border-gray-100 shadow-sm">
                             <img
                               src={visa.flagImage}
                               alt={`${visa.country} flag`}
@@ -1752,11 +1752,11 @@ export default function App() {
                         </div>
 
                         {/* Country Name */}
-                        <div className="px-4 pb-4 pt-1 text-center">
-                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base group-hover:text-[#7C3AED] transition-colors">
+                        <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-1 text-center">
+                          <h3 className="font-semibold text-gray-900 text-xs sm:text-base group-hover:text-[#7C3AED] transition-colors h-8 sm:h-6 flex items-center justify-center">
                             {visa.country}
                           </h3>
-                          <p className="text-xs text-gray-400 mt-1">
+                          <p className="text-[10px] sm:text-xs text-gray-400 mt-1">
                             Click for visa details →
                           </p>
                         </div>
